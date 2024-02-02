@@ -1,0 +1,72 @@
+version: "3.9"
+
+networks:
+  pg-network:
+    external: true
+
+services:
+  pgdatabase:
+    container_name: pgsql-dev
+    image: postgres:14
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 45s
+      retries: 10
+      start_period: 30s
+    volumes:
+      - /Users/waleed/development/docker/dataeng/data:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_DB=${POSTGRES_DBNAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: always
+    networks:
+      - mage-network
+
+  pgadmin:
+    container_name: pgadmin-dev
+    image: dpage/pgadmin4:latest
+    env_file:
+      - .env
+    volumes:
+      - /Users/waleed/development/docker/dataeng/pgadmin:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+    ports:
+      - 8080:80
+    restart: always
+    networks:
+      - mage-network
+    depends_on:
+      - pgdatabase
+
+  magic:
+    image: mageai/mageai:latest
+    command: mage start ${PROJECT_NAME}
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      USER_CODE_PATH: /home/src/${PROJECT_NAME}
+      POSTGRES_DBNAME: ${POSTGRES_DBNAME}
+      POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    ports:
+      - ${POSTGRES_PORT}:6789
+    volumes:
+      - .:/home/src/
+    restart: on-failure:5
+    networks:
+      - mage-network
