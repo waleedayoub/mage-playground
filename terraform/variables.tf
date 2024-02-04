@@ -1,41 +1,83 @@
-variable "credentials" {
-  description = "My Credentials"
-  default     = "<Path to your Service Account json file>"
-  #ex: if you have a directory where this file is called keys with your service account json file
-  #saved there as my-creds.json you could use default = "./keys/my-creds.json"
-}
-
-
-variable "project" {
-  description = "Project"
-  default     = "<Your Project ID>"
-}
-
-variable "region" {
-  description = "Region"
-  #Update the below to your desired region
-  default     = "us-central1"
+variable "resource_group_name" {
+  description = "The name of the resource group"
+  type        = string
+  default     = "waleed-dataeng-rg"
 }
 
 variable "location" {
-  description = "Project Location"
-  #Update the below to your desired location
-  default     = "US"
+  description = "The Azure location where resources will be created"
+  type        = string
+  default     = "East US"
 }
 
-variable "bq_dataset_name" {
-  description = "My BigQuery Dataset Name"
-  #Update the below to what you want your dataset to be called
-  default     = "demo_dataset"
+variable "virtual_network_name" {
+  description = "The name of the virtual network"
+  type        = string
+  default     = "example-network"
 }
 
-variable "gcs_bucket_name" {
-  description = "My Storage Bucket Name"
-  #Update the below to a unique bucket name
-  default     = "terraform-demo-terra-bucket"
+variable "address_space" {
+  description = "The address space for the virtual network"
+  type        = list(string)
+  default     = ["10.0.0.0/16"]
 }
 
-variable "gcs_storage_class" {
-  description = "Bucket Storage Class"
-  default     = "STANDARD"
+variable "subnet_name" {
+  description = "The name of the subnet"
+  type        = string
+  default     = "mage-subnet"
+}
+
+variable "subnet_prefixes" {
+  description = "The address prefixes for the subnet"
+  type        = list(string)
+  default     = ["10.0.1.0/24"]
+}
+
+variable "network_interface_name" {
+  description = "The name of the network interface"
+  type        = string
+  default     = "mage-nic"
+}
+
+variable "vm_name" {
+  description = "The name of the virtual machine"
+  type        = string
+  default     = "mage-vm"
+}
+
+variable "vm_size" {
+  description = "The size of the virtual machine"
+  type        = string
+  default     = "Standard_DS1_v2"
+}
+
+variable "admin_username" {
+  description = "The admin username for the virtual machine"
+  type        = string
+  default     = "waleed"
+}
+
+variable "public_key_path" {
+  description = "The path to the public SSH key to be used for the VM"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+}
+
+variable "storage_account_name" {
+  description = "The name of the storage account"
+  type        = string
+  default     = "magestorageaccount"
+}
+
+variable "account_tier" {
+  description = "The tier of the storage account"
+  type        = string
+  default     = "Standard"
+}
+
+variable "account_replication_type" {
+  description = "The replication type of the storage account"
+  type        = string
+  default     = "GRS"
 }
