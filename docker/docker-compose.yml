@@ -9,7 +9,7 @@ services:
     container_name: pgsql-dev
     image: postgres:14
     env_file:
-      - .env
+      - ../.env
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
@@ -17,7 +17,7 @@ services:
       retries: 10
       start_period: 30s
     volumes:
-      - /Users/waleed/development/docker/dataeng/data:/var/lib/postgresql/data:rw
+      - ./data:/var/lib/postgresql/data:rw
     environment:
       - POSTGRES_DB=${POSTGRES_DBNAME}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -32,9 +32,9 @@ services:
     container_name: pgadmin-dev
     image: dpage/pgadmin4:latest
     env_file:
-      - .env
+      - ../.env
     volumes:
-      - /Users/waleed/development/docker/dataeng/pgadmin:/var/lib/pgadmin
+      - ./pgadmin:/var/lib/pgadmin
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
@@ -51,7 +51,7 @@ services:
     image: mageai/mageai:latest
     command: mage start ${PROJECT_NAME}
     env_file:
-      - .env
+      - ../.env
     build:
       context: .
       dockerfile: Dockerfile
@@ -66,7 +66,7 @@ services:
     ports:
       - ${POSTGRES_PORT}:6789
     volumes:
-      - .:/home/src/
+      - ./mage:/home/src/
     restart: on-failure:5
     networks:
       - mage-network
